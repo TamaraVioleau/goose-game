@@ -1,3 +1,4 @@
+// src/lib/logic/generateSnailCases.ts
 export interface CaseData {
   id: number;
   x: number;
@@ -8,42 +9,42 @@ export interface CaseData {
 
 export function generateSnailCases(
   total: number,
-  centerX = 250,
-  centerY = 250,
-  step = 40
+  caseSize = 40,
+  gap = 8,
+  centerX = 400,
+  centerY = 400
 ): CaseData[] {
-  const coords: { x: number; y: number }[] = [];
+  const gridSize = Math.ceil(Math.sqrt(total));
+  const grid: { x: number; y: number }[] = [];
 
-  let x = centerX;
-  let y = centerY;
-  let dx = step;
-  let dy = 0;
-  let segmentLength = 1;
-  let segmentPassed = 0;
-  let turnCounter = 0;
+  let minX = 0;
+  let maxX = gridSize - 1;
+  let minY = 0;
+  let maxY = gridSize - 1;
 
-  for (let i = 0; i < total; i++) {
-    coords.push({ x, y });
-    x += dx;
-    y += dy;
-    segmentPassed++;
-
-    if (segmentPassed === segmentLength) {
-      segmentPassed = 0;
-      const temp = dx;
-      dx = -dy;
-      dy = temp;
-      turnCounter++;
-      if (turnCounter % 2 === 0) segmentLength++;
-    }
+  while (grid.length < total) {
+    for (let x = minX; x <= maxX && grid.length < total; x++)
+      grid.push({ x, y: minY });
+    minY++;
+    for (let y = minY; y <= maxY && grid.length < total; y++)
+      grid.push({ x: maxX, y });
+    maxX--;
+    for (let x = maxX; x >= minX && grid.length < total; x--)
+      grid.push({ x, y: maxY });
+    maxY--;
+    for (let y = maxY; y >= minY && grid.length < total; y--)
+      grid.push({ x: minX, y });
+    minX++;
   }
 
-  coords.reverse();
+  const totalSize = gridSize * (caseSize + gap) - gap;
+  const offsetX = centerX - totalSize / 2;
+  const offsetY = centerY - totalSize / 2;
 
-  return coords.map((c, i) => ({
+  return grid.map((pos, i) => ({
     id: i,
-    x: c.x,
-    y: c.y,
+    x: offsetX + pos.x * (caseSize + gap),
+    y: offsetY + pos.y * (caseSize + gap),
     color: pickColor(i),
     icon: pickIcon(i),
   }));
@@ -55,7 +56,7 @@ function pickColor(i: number): string {
 }
 
 function pickIcon(i: number): string | undefined {
-  if (i % 7 === 0) return "🎲";
   if (i % 11 === 0) return "⛈️";
+  if (i % 7 === 0) return "🎲";
   return undefined;
 }
