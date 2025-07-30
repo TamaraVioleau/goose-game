@@ -18,7 +18,7 @@ onMount(async () => {
   );
 });
 
-function handleRoll(event) {
+function handleRoll(event: { detail: { total: number; }; }) {
   position = Math.min(position + event.detail.total, board.length - 1);
 }
 </script>

@@ -57,7 +57,8 @@ function makeCase(id: number, row: number, col: number): GridCaseData {
     row,
     col,
     color: pickColor(id),
-    icon: pickIcon(id)
+    icon: pickIcon(id),
+    number: id + 1
   };
 }
 
