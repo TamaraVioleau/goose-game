@@ -3,8 +3,8 @@
   export let id: number;
   export let color: string;
   export let icon: string | null = null;
-  export let row?: number;
-  export let col?: number;
+  export let row: number | undefined = undefined;
+  export let col: number | undefined = undefined;
 </script>
 
 <div

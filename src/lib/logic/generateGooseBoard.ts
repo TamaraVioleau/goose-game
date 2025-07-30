@@ -1,4 +1,5 @@
 export interface GridCaseData {
+  number: number;
   id: number;
   row: number;
   col: number;

@@ -6,7 +6,11 @@
 
   export let currentPosition = 0;
 
-  const cases = generateGooseBoard();
+  // Ensure each case has a 'number' property
+  const cases = generateGooseBoard().map((c, i) => ({
+    ...c,
+    number: c.number ?? i + 1,
+  }));
 </script>
 
 <div class="board">
