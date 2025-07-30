@@ -1,21 +1,12 @@
-<!-- plateau principal -->
+<!-- src/lib/components/GameBoard.svelte -->
 <script lang="ts">
   import BoardCase from "./BoardCase.svelte";
-  import Pawn from "./Pawn.svelte";
-  import { generateSnailCases } from "$lib/logic/generateSnailCases";
-
-  export let total = 64;
-  export let currentPosition = 0;
-
-  const cases = generateSnailCases(total);
+  import { generateSpiralCases } from "$lib/logic/generateSpiralCases";
+  const cases = generateSpiralCases(63);
 </script>
 
-<svg viewBox="0 0 500 500" width="100%" height="auto">
-  {#each cases as c (c.id)}
+<svg width="100%" height="auto" viewBox="0 0 700 700">
+  {#each cases as c}
     <BoardCase {...c} />
   {/each}
-
-  {#if cases[currentPosition]}
-    <Pawn x={cases[currentPosition].x} y={cases[currentPosition].y} />
-  {/if}
 </svg>
