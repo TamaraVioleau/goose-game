@@ -7,6 +7,9 @@ import DiceRoller from "../components/DiceRoller.svelte";
 import { generateGooseBoard } from "$lib/logic/generateGooseBoard";
 
 let position = 0;
+let turns = 0;
+let gameOver = false;
+let message = '';
 const board = generateGooseBoard();
 
 onMount(async () => {
@@ -18,8 +21,15 @@ onMount(async () => {
   );
 });
 
-function handleRoll(event: { detail: { total: number; }; }) {
+function handleRoll(event: { detail: { total: number } }) {
+  if (gameOver) return;
+  turns += 1;
   position = Math.min(position + event.detail.total, board.length - 1);
+  message = `Tour ${turns}/10`;
+  if (turns >= 10) {
+    gameOver = true;
+    message = "10 tours écoulés. Vous avez perdu !";
+  }
 }
 </script>
 
@@ -32,7 +42,10 @@ function handleRoll(event: { detail: { total: number; }; }) {
 <p>Check the console for the list of categories loaded from Firebase.</p>
 
 <GameBoard currentPosition={position} />
-<DiceRoller on:rolled={handleRoll} />
+<p>{message}</p>
+{#if !gameOver}
+  <DiceRoller on:rolled={handleRoll} />
+{/if}
 
 <style>
   h1 {

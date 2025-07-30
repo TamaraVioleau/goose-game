@@ -2,6 +2,16 @@
 
 Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
 
+## Gameplay
+
+The Goose Game is played over a series of turns. On each turn you roll the dice and move your pawn forward.
+
+- The colour of the square indicates the question category. Categories are loaded from Firebase and associated with board colours.
+- If you answer incorrectly, you skip rolling on the next turn and must answer a new question instead.
+- After 10 turns the game ends and you lose.
+
+These rules are implemented in the Svelte application found in `src/routes/+page.svelte`.
+
 ## Creating a project
 
 If you're seeing this, you've probably already done this step. Congrats!
