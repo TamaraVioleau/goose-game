@@ -3,9 +3,14 @@
   export let id: number;
   export let color: string;
   export let icon: string | null = null;
+  export let row?: number;
+  export let col?: number;
 </script>
 
-<div class="case" style="background-color: {color}">
+<div
+  class="case"
+  style="background-color: {color}; grid-row: {row}; grid-column: {col};"
+>
   {icon ?? id + 1}
 </div>
 
