@@ -2,12 +2,12 @@
 <script lang="ts">
   import BoardCase from "./BoardCase.svelte";
   import Pawn from "./Pawn.svelte";
-  import { generateCircularCases } from "$lib/logic/generateCircularCases";
+  import { generateSnailCases } from "$lib/logic/generateSnailCases";
 
   export let total = 64;
   export let currentPosition = 0;
 
-  const cases = generateCircularCases(total);
+  const cases = generateSnailCases(total);
 </script>
 
 <svg viewBox="0 0 500 500" width="100%" height="auto">
