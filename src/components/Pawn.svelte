@@ -1,14 +1,19 @@
 <!-- pion mobile -->
 <script lang="ts">
-  export let x: number;
-  export let y: number;
+  export let row: number;
+  export let col: number;
 </script>
 
-<circle
-  cx={x + 20}
-  cy={y + 20}
-  r="10"
-  fill="black"
-  stroke="white"
-  stroke-width="2"
-/>
+<div class="pawn" style="grid-row: {row}; grid-column: {col};"></div>
+
+<style>
+  .pawn {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: black;
+    border: 2px solid white;
+    justify-self: center;
+    align-self: center;
+  }
+</style>

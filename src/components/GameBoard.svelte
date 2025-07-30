@@ -1,21 +1,32 @@
-<!-- plateau principal -->
+<!-- plateau principal en grille -->
 <script lang="ts">
   import BoardCase from "./BoardCase.svelte";
   import Pawn from "./Pawn.svelte";
-  import { generateSnailCases } from "$lib/logic/generateSnailCases";
+  import { generateGooseBoard } from "$lib/logic/generateGooseBoard";
 
-  export let total = 64;
   export let currentPosition = 0;
 
-  const cases = generateSnailCases(total);
+  const cases = generateGooseBoard();
 </script>
 
-<svg viewBox="0 0 500 500" width="100%" height="auto">
+<div class="board">
   {#each cases as c (c.id)}
-    <BoardCase {...c} />
+    <BoardCase id={c.id} color={c.color} icon={c.icon} style="grid-row: {c.row}; grid-column: {c.col};" />
   {/each}
 
   {#if cases[currentPosition]}
-    <Pawn x={cases[currentPosition].x} y={cases[currentPosition].y} />
+    <Pawn row={cases[currentPosition].row} col={cases[currentPosition].col} />
   {/if}
-</svg>
+</div>
+
+<style>
+  .board {
+    display: grid;
+    grid-template-columns: repeat(10, 40px);
+    grid-template-rows: repeat(10, 40px);
+    gap: 4px;
+    width: fit-content;
+    margin: 0 auto;
+    position: relative;
+  }
+</style>
