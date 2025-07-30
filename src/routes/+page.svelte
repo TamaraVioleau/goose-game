@@ -1,26 +1,36 @@
 <script lang="ts">
-import { onMount } from "svelte";
-import { db } from "$lib/firebase";
-import { collection, getDocs } from "firebase/firestore";
-import GameBoard from "../components/GameBoard.svelte";
-import DiceRoller from "../components/DiceRoller.svelte";
-import { generateGooseBoard } from "$lib/logic/generateGooseBoard";
+  import { onMount } from "svelte";
+  import { db } from "$lib/firebase";
+  import { collection, getDocs } from "firebase/firestore";
+  import GameBoard from "../components/GameBoard.svelte";
+  import DiceRoller from "../components/DiceRoller.svelte";
+  import { generateGooseBoard } from "$lib/logic/generateGooseBoard";
 
-let position = 0;
-const board = generateGooseBoard();
+  let position = 0;
+  let turns = 0;
+  let gameOver = false;
+  let message = "";
+  const board = generateGooseBoard();
 
-onMount(async () => {
-  const ref = collection(db, "categories");
-  const snapshot = await getDocs(ref);
-  console.log(
-    "Categories:",
-    snapshot.docs.map((doc) => doc.id)
-  );
-});
+  onMount(async () => {
+    const ref = collection(db, "categories");
+    const snapshot = await getDocs(ref);
+    console.log(
+      "Categories:",
+      snapshot.docs.map((doc) => doc.id)
+    );
+  });
 
-function handleRoll(event: { detail: { total: number; }; }) {
-  position = Math.min(position + event.detail.total, board.length - 1);
-}
+  function handleRoll(event: { detail: { total: number } }) {
+    if (gameOver) return;
+    turns += 1;
+    position = Math.min(position + event.detail.total, board.length - 1);
+    message = `Tour ${turns}/10`;
+    if (turns >= 10) {
+      gameOver = true;
+      message = "10 tours écoulés. Vous avez perdu !";
+    }
+  }
 </script>
 
 <h1>Goose Game 🧩</h1>
@@ -32,7 +42,10 @@ function handleRoll(event: { detail: { total: number; }; }) {
 <p>Check the console for the list of categories loaded from Firebase.</p>
 
 <GameBoard currentPosition={position} />
-<DiceRoller on:rolled={handleRoll} />
+<p>{message}</p>
+{#if !gameOver}
+  <DiceRoller on:rolled={handleRoll} />
+{/if}
 
 <style>
   h1 {
