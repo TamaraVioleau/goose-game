@@ -22,7 +22,7 @@
 </p>
 <p>Check the console for the list of categories loaded from Firebase.</p>
 
-<GameBoard />
+<GameBoard currentPosition={5} />
 
 <style>
   h1 {
