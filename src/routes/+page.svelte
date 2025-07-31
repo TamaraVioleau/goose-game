@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { db } from "$lib/firebase";
+  import { db } from "$lib/firebaseClient";
   import { collection, getDocs } from "firebase/firestore";
   import GameBoard from "../components/GameBoard.svelte";
   import DiceRoller from "../components/DiceRoller.svelte";
@@ -70,7 +70,11 @@
 {#if !gameOver}
   <DiceRoller on:rolled={handleRoll} />
 {/if}
-<QuestionModal visible={showQuestion} question={currentQuestion} on:close={() => (showQuestion = false)} />
+<QuestionModal
+  visible={showQuestion}
+  question={currentQuestion}
+  on:close={() => (showQuestion = false)}
+/>
 
 <style>
   h1 {

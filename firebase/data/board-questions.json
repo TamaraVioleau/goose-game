@@ -1,0 +1,85 @@
+{
+  "categories": {
+    "hygiene": {
+      "nom": "Hygiène",
+      "questions": [
+        {
+          "question": "À quelle fréquence doit-on se laver les mains en cuisine ?",
+          "choices": [
+            "Avant de commencer son service",
+            "Toutes les heures",
+            "Avant chaque manipulation et après contact avec des éléments souillés",
+            "Uniquement après être allé aux toilettes"
+          ],
+          "answer": "Avant chaque manipulation et après contact avec des éléments souillés",
+          "explanation": "Les mains doivent être lavées régulièrement pour éviter toute contamination croisée."
+        },
+        {
+          "question": "Quel est le risque principal d’un plan de travail mal nettoyé ?",
+          "choices": [
+            "Mauvaise odeur",
+            "Dégradation du matériel",
+            "Prolifération de bactéries",
+            "Perte de clients"
+          ],
+          "answer": "Prolifération de bactéries",
+          "explanation": "Un plan de travail sale est un vecteur majeur de contamination microbienne."
+        }
+      ]
+    },
+    "securite": {
+      "nom": "Sécurité",
+      "questions": [
+        {
+          "question": "Que signifie le sigle EPI ?",
+          "choices": [
+            "Équipement de Protection Individuelle",
+            "Équipement Personnel d’Inspection",
+            "Élément de Prévention Incendie",
+            "Engagement Professionnel Interne"
+          ],
+          "answer": "Équipement de Protection Individuelle",
+          "explanation": "Les EPI sont obligatoires pour protéger les salariés contre les risques professionnels."
+        }
+      ]
+    },
+    "accessibilite": {
+      "nom": "Accessibilité",
+      "questions": [
+        {
+          "question": "Quelle est la largeur minimale d’un passage accessible en fauteuil roulant ?",
+          "choices": ["60 cm", "90 cm", "120 cm", "150 cm"],
+          "answer": "90 cm",
+          "explanation": "La norme impose une largeur minimale de 90 cm pour permettre le passage d’un fauteuil roulant."
+        }
+      ]
+    },
+    "accueil_client": {
+      "nom": "Accueil client",
+      "questions": [
+        {
+          "question": "Quelle attitude adopter face à un client mécontent ?",
+          "choices": [
+            "Lui demander de se calmer immédiatement",
+            "Ignorer ses plaintes",
+            "L’écouter attentivement et proposer une solution",
+            "Lui dire de revenir plus tard"
+          ],
+          "answer": "L’écouter attentivement et proposer une solution",
+          "explanation": "Un client mécontent a besoin d’être entendu et rassuré rapidement."
+        }
+      ]
+    },
+    "allergenes": {
+      "nom": "Allergènes",
+      "questions": [
+        {
+          "question": "Combien d’allergènes doivent obligatoirement être signalés ?",
+          "choices": ["8", "10", "14", "20"],
+          "answer": "14",
+          "explanation": "La réglementation européenne impose l’information sur 14 allergènes majeurs dans les menus."
+        }
+      ]
+    }
+  }
+}
