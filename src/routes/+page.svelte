@@ -24,23 +24,30 @@
     );
   });
 
-  async function fetchQuestion() {
-    const catRef = collection(db, "categories");
-    const catSnap = await getDocs(catRef);
-    if (catSnap.empty) {
-      currentQuestion = "Aucune catégorie trouvée.";
+  const colorCategoryMap: Record<string, string> = {
+    "#EF4444": "hygiene", // rouge -> catégorie 1
+    "#6B21A8": "securite", // violet -> catégorie 2
+    "#3B82F6": "accessibilite", // bleu -> catégorie 3
+    "#F59E0B": "accueil_client", // jaune -> catégorie 4
+    "#10B981": "allergenes", // vert -> catégorie 5
+  };
+
+  async function fetchQuestion(color: string) {
+    const categoryKey = colorCategoryMap[color];
+    if (!categoryKey) {
+      currentQuestion = "Catégorie inconnue.";
       return;
     }
-    const firstCat = catSnap.docs[0];
-    const qRef = collection(db, "categories", firstCat.id, "questions");
+    const qRef = collection(db, "categories", categoryKey, "questions");
     const qSnap = await getDocs(qRef);
     if (qSnap.empty) {
       currentQuestion = "Aucune question disponible.";
       return;
     }
-    const questionDoc = qSnap.docs[0];
+    const docs = qSnap.docs;
+    const randomDoc = docs[Math.floor(Math.random() * docs.length)];
     currentQuestion =
-      questionDoc.get("text") ?? questionDoc.get("question") ?? "";
+      randomDoc.get("text") ?? randomDoc.get("question") ?? "";
   }
 
   async function handleRoll(event: { detail: { total: number } }) {
@@ -48,7 +55,8 @@
     turns += 1;
     position = Math.min(position + event.detail.total, board.length - 1);
     message = `Tour ${turns}/10`;
-    await fetchQuestion();
+    const color = board[position].color;
+    await fetchQuestion(color);
     showQuestion = true;
     if (turns >= 10) {
       gameOver = true;
