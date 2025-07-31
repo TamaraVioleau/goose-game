@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { db } from "$lib/firebaseClient";
-  import { collection, getDocs } from "firebase/firestore";
+  import { collection, getDocs, doc, getDoc } from "firebase/firestore";
   import GameBoard from "../components/GameBoard.svelte";
   import DiceRoller from "../components/DiceRoller.svelte";
-  import QuestionModal from "../components/QuestionModal.svelte";
+  import QuestionModal, { type QuestionData } from "../components/QuestionModal.svelte";
   import { generateGooseBoard } from "$lib/logic/generateGooseBoard";
 
   let position = 0;
@@ -12,7 +12,7 @@
   let gameOver = false;
   let message = "";
   let showQuestion = false;
-  let currentQuestion = "";
+  let currentQuestion: QuestionData | null = null;
   const board = generateGooseBoard();
 
   onMount(async () => {
@@ -35,19 +35,38 @@
   async function fetchQuestion(color: string) {
     const categoryKey = colorCategoryMap[color];
     if (!categoryKey) {
-      currentQuestion = "Catégorie inconnue.";
+      currentQuestion = null;
       return;
     }
+
+    // fetch category name
+    let categoryName = categoryKey;
+    try {
+      const catRef = doc(db, "categories", categoryKey);
+      const catSnap = await getDoc(catRef);
+      if (catSnap.exists()) {
+        categoryName = catSnap.get("nom") ?? categoryKey;
+      }
+    } catch (e) {
+      // ignore errors and keep key as name
+    }
+
     const qRef = collection(db, "categories", categoryKey, "questions");
     const qSnap = await getDocs(qRef);
     if (qSnap.empty) {
-      currentQuestion = "Aucune question disponible.";
+      currentQuestion = null;
       return;
     }
     const docs = qSnap.docs;
     const randomDoc = docs[Math.floor(Math.random() * docs.length)];
-    currentQuestion =
-      randomDoc.get("text") ?? randomDoc.get("question") ?? "";
+
+    currentQuestion = {
+      category: categoryName,
+      question: randomDoc.get("question") ?? randomDoc.get("text") ?? "",
+      choices: randomDoc.get("choices") ?? [],
+      answer: randomDoc.get("answer") ?? "",
+      explanation: randomDoc.get("explanation") ?? "",
+    } as QuestionData;
   }
 
   async function handleRoll(event: { detail: { total: number } }) {
@@ -80,7 +99,7 @@
 {/if}
 <QuestionModal
   visible={showQuestion}
-  question={currentQuestion}
+  questionData={currentQuestion}
   on:close={() => (showQuestion = false)}
 />
 
