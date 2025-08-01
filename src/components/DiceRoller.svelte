@@ -3,7 +3,8 @@
   const dispatch = createEventDispatcher();
 
   let showModal = false;
-  let rolling = false;
+  let showResultText = false;
+  let result = 0;
   let die1 = 1;
   let die2 = 1;
   let rollInterval: ReturnType<typeof setInterval>;
@@ -13,7 +14,7 @@
 
   function openModal() {
     showModal = true;
-    rolling = true;
+    showResultText = false;
     rollInterval = setInterval(() => {
       die1 = Math.floor(Math.random() * 6) + 1;
       die2 = Math.floor(Math.random() * 6) + 1;
@@ -22,10 +23,14 @@
       clearInterval(rollInterval);
       die1 = Math.floor(Math.random() * 6) + 1;
       die2 = Math.floor(Math.random() * 6) + 1;
-      rolling = false;
-      dispatch('rolled', { total: die1 + die2 });
+      result = die1 + die2;
+      dispatch('rolled', { total: result });
       setTimeout(() => {
-        showModal = false;
+        showResultText = true;
+        setTimeout(() => {
+          showModal = false;
+          showResultText = false;
+        }, 3000);
       }, 3000);
     }, 2000);
   }
@@ -38,8 +43,12 @@
 {#if showModal}
   <div class="overlay">
     <div class="modal">
-      <div class="dice" class:rolling={rolling}>{getChar(die1)}</div>
-      <div class="dice" class:rolling={rolling}>{getChar(die2)}</div>
+      {#if !showResultText}
+        <div class="dice">{getChar(die1)}</div>
+        <div class="dice">{getChar(die2)}</div>
+      {:else}
+        <p class="result-text">VOTRE LANCER : {result}</p>
+      {/if}
     </div>
   </div>
 {/if}
@@ -84,16 +93,8 @@
     border-radius: 4px;
   }
 
-  .rolling {
-    animation: spin 0.5s linear infinite;
-  }
-
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+  .result-text {
+    font-size: 24px;
+    font-weight: bold;
   }
 </style>
