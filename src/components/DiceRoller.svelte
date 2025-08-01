@@ -3,18 +3,31 @@
   const dispatch = createEventDispatcher();
 
   let showModal = false;
+  let rolling = false;
   let die1 = 1;
   let die2 = 1;
+  let rollInterval: ReturnType<typeof setInterval>;
+
+  const diceChars = ['\u2680','\u2681','\u2682','\u2683','\u2684','\u2685'];
+  const getChar = (n: number) => diceChars[n - 1];
 
   function openModal() {
-    roll();
     showModal = true;
-  }
-
-  function roll() {
-    die1 = Math.floor(Math.random() * 6) + 1;
-    die2 = Math.floor(Math.random() * 6) + 1;
-    dispatch('rolled', { total: die1 + die2 });
+    rolling = true;
+    rollInterval = setInterval(() => {
+      die1 = Math.floor(Math.random() * 6) + 1;
+      die2 = Math.floor(Math.random() * 6) + 1;
+    }, 100);
+    setTimeout(() => {
+      clearInterval(rollInterval);
+      die1 = Math.floor(Math.random() * 6) + 1;
+      die2 = Math.floor(Math.random() * 6) + 1;
+      rolling = false;
+      dispatch('rolled', { total: die1 + die2 });
+      setTimeout(() => {
+        showModal = false;
+      }, 3000);
+    }, 2000);
   }
 </script>
 
@@ -23,11 +36,10 @@
 </button>
 
 {#if showModal}
-  <div class="overlay" on:click={() => (showModal = false)}>
-    <div class="modal" on:click|stopPropagation>
-      <div class="dice">{die1}</div>
-      <div class="dice">{die2}</div>
-      <button on:click={() => (showModal = false)}>Ok</button>
+  <div class="overlay">
+    <div class="modal">
+      <div class="dice" class:rolling={rolling}>{getChar(die1)}</div>
+      <div class="dice" class:rolling={rolling}>{getChar(die2)}</div>
     </div>
   </div>
 {/if}
@@ -70,5 +82,18 @@
     justify-content: center;
     border: 1px solid #ccc;
     border-radius: 4px;
+  }
+
+  .rolling {
+    animation: spin 0.5s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 </style>
