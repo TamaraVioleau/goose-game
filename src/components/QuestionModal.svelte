@@ -1,6 +1,4 @@
-<script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-
+<script lang="ts" context="module">
   export interface QuestionData {
     category: string;
     question: string;
@@ -8,6 +6,10 @@
     answer: string;
     explanation: string;
   }
+</script>
+
+<script lang="ts">
+  import { createEventDispatcher } from 'svelte';
 
   export let visible: boolean;
   export let questionData: QuestionData | null = null;
