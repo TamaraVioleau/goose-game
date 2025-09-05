@@ -20,6 +20,10 @@
   let canRoll = false;
   let awaitingNextTurn = false;
   let questionStartTime = 0;
+  // Etat de finale (case finale)
+  let finalPhase = false;
+  let finalCategoriesRemaining: string[] = [];
+  let currentCategoryKey: string | null = null;
 
   onMount(async () => {
     const ref = collection(db, "categories");
@@ -70,6 +74,40 @@
     } as QuestionData;
   }
 
+  // Variante: récupérer une question directement par clé de catégorie
+  async function fetchQuestionByCategoryKey(categoryKey?: string) {
+    if (!categoryKey) {
+      currentQuestion = null;
+      return;
+    }
+
+    let categoryName = categoryKey;
+    try {
+      const catRef = doc(db, "categories", categoryKey);
+      const catSnap = await getDoc(catRef);
+      if (catSnap.exists()) {
+        categoryName = catSnap.get("nom") ?? categoryKey;
+      }
+    } catch (e) {}
+
+    const qRef = collection(db, "categories", categoryKey, "questions");
+    const qSnap = await getDocs(qRef);
+    if (qSnap.empty) {
+      currentQuestion = null;
+      return;
+    }
+    const docs = qSnap.docs;
+    const randomDoc = docs[Math.floor(Math.random() * docs.length)];
+
+    currentQuestion = {
+      category: categoryName,
+      question: randomDoc.get("question") ?? randomDoc.get("text") ?? "",
+      choices: randomDoc.get("choices") ?? [],
+      answer: randomDoc.get("answer") ?? "",
+      explanation: randomDoc.get("explanation") ?? "",
+    } as QuestionData;
+  }
+
   async function startTurn() {
     if (gameOver) return;
     if (turns >= 15) {
@@ -78,8 +116,26 @@
       return;
     }
     turns += 1;
-    message = `Tour ${turns}/15`;
-    await fetchQuestion(board[position].color);
+    if (position === board.length - 1) {
+      finalPhase = true;
+    }
+    if (finalPhase) {
+      if (finalCategoriesRemaining.length === 0) {
+        finalCategoriesRemaining = [
+          "hygiene",
+          "securite",
+          "accessibilite",
+          "accueil_client",
+          "allergenes",
+        ];
+      }
+      currentCategoryKey = finalCategoriesRemaining[0];
+      message = `Finale – ${finalCategoriesRemaining.length} cat. restantes | Tour ${turns}/15`;
+      await fetchQuestionByCategoryKey(currentCategoryKey);
+    } else {
+      message = `Tour ${turns}/15`;
+      await fetchQuestion(board[position].color);
+    }
     questionStartTime = Date.now();
     showQuestion = true;
   }
@@ -98,16 +154,34 @@
       const speedBonus = Math.max(0, 5 - Math.floor(elapsed / 1000));
       score += base + speedBonus;
       consecutive += 1;
-      if (consecutive >= 5) {
+      if (!finalPhase && consecutive >= 5) {
         gameOver = true;
         message = "Grand Chelem !";
         score += (15 - turns) * 5;
-      } else {
+      } else if (!finalPhase) {
         canRoll = true;
+      } else {
+        // Finale: valider la catégorie en cours
+        if (currentCategoryKey) {
+          finalCategoriesRemaining = finalCategoriesRemaining.filter((c) => c !== currentCategoryKey);
+        }
+        if (finalCategoriesRemaining.length === 0) {
+          gameOver = true;
+          message = "Finale réussie !";
+          score += (15 - turns) * 5;
+        } else {
+          awaitingNextTurn = true;
+        }
       }
-      awaitingNextTurn = false;
+      if (!finalPhase) {
+        awaitingNextTurn = false;
+      }
     } else {
       consecutive = 0;
+      if (finalPhase) {
+        // En finale: une erreur enlève un tour
+        turns = Math.max(0, turns - 1);
+      }
       awaitingNextTurn = true;
     }
   }
@@ -124,6 +198,13 @@
     if (gameOver) return;
     canRoll = false;
     position = Math.min(position + event.detail.total, board.length - 1);
+    // Si on atteint la case finale, on passe en finale
+    if (position === board.length - 1) {
+      finalPhase = true;
+      canRoll = false;
+      await startTurn();
+      return;
+    }
     let icon = board[position].icon;
     if (icon === "⛈️") {
       const move = Math.random() < 0.5 ? -2 : 2;
