@@ -10,6 +10,7 @@
 
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
+  import { fade, scale } from 'svelte/transition';
 
   export let visible: boolean;
   export let questionData: QuestionData | null = null;
@@ -71,7 +72,7 @@
 </script>
 
 {#if visible && questionData}
-<div class="overlay" role="presentation">
+<div class="overlay" role="presentation" transition:fade={{ duration: 250 }}>
   <div
     class="modal" tabindex="-1"
     role="dialog"
@@ -80,6 +81,7 @@
     aria-describedby="qm-question"
     on:click|stopPropagation
     style={`--cat-color: ${categoryColor}`}
+    transition:scale={{ duration: 250, start: 0.95 }}
   >
     <h2 id="qm-title" class="category-title">{questionData.category}</h2>
 

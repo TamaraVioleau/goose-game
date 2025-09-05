@@ -1,5 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
+  import { fade, scale } from 'svelte/transition';
   const dispatch = createEventDispatcher();
 
   let showModal = false;
@@ -24,14 +25,16 @@
       die1 = Math.floor(Math.random() * 6) + 1;
       die2 = Math.floor(Math.random() * 6) + 1;
       result = die1 + die2;
-      dispatch('rolled', { total: result });
+      // Laisser le résultat visible un court instant, puis fermer en douceur
       setTimeout(() => {
-        showResultText = true;
+        // Déclenche l'animation de disparition
+        showModal = false;
+        // Attendre la fin de la transition avant de notifier le parent
+        const TRANSITION_MS = 250;
         setTimeout(() => {
-          showModal = false;
-          showResultText = false;
-        }, 3000);
-      }, 3000);
+          dispatch('rolled', { total: result });
+        }, TRANSITION_MS);
+      }, 1200);
     }, 2000);
   }
 </script>
@@ -41,8 +44,8 @@
 </button>
 
 {#if showModal}
-  <div class="overlay">
-    <div class="modal">
+  <div class="overlay" transition:fade={{ duration: 250 }}>
+    <div class="modal" transition:scale={{ duration: 250, start: 0.95 }}>
       {#if !showResultText}
         <div class="dice">{getChar(die1)}</div>
         <div class="dice">{getChar(die2)}</div>
