@@ -46,7 +46,6 @@
       {#if !showResultText}
         <div class="dice">{getChar(die1)}</div>
         <div class="dice">{getChar(die2)}</div>
-      {:else}
         <p class="result-text">VOTRE LANCER : {result}</p>
       {/if}
     </div>

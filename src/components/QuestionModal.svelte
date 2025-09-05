@@ -19,20 +19,24 @@
   let selected: string = '';
   let validated = false;
   let resultMessage = '';
+  let showExplanation = false;
+  let wasCorrect = false;
 
   const close = () => {
     visible = false;
     selected = '';
     validated = false;
     resultMessage = '';
+    showExplanation = false;
     dispatch('close');
   };
 
   const validate = () => {
     if (!questionData) return;
     validated = true;
-    resultMessage =
-      selected === questionData.answer ? 'Bonne réponse !' : 'Mauvaise réponse !';
+    wasCorrect = selected === questionData.answer;
+    resultMessage = wasCorrect ? 'Bonne réponse !' : 'Mauvaise réponse !';
+    dispatch('answered', { correct: wasCorrect });
   };
 </script>
 
@@ -55,7 +59,12 @@
       <button on:click={validate} disabled={selected === ''}>Valider</button>
     {:else}
       <p class="result">{resultMessage}</p>
-      <p class="explanation">{questionData.explanation}</p>
+      <button class="info-btn" on:click={() => (showExplanation = !showExplanation)}>
+        ℹ️
+      </button>
+      {#if showExplanation}
+        <p class="explanation">{questionData.explanation}</p>
+      {/if}
     {/if}
 
     <button on:click={close}>Fermer</button>
@@ -85,6 +94,13 @@
   .result {
     font-weight: bold;
     margin-top: 10px;
+  }
+  .info-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    margin-top: 4px;
   }
   .explanation {
     font-style: italic;
