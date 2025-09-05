@@ -36,7 +36,7 @@
   }
 </script>
 
-<button class="dice-button" on:click={openModal}>
+<button class="dice-button" on:click={openModal} aria-label="Lancer les dés">
   🎲
 </button>
 
@@ -58,9 +58,16 @@
     top: 10px;
     right: 10px;
     font-size: 32px;
-    background: none;
-    border: none;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
   }
 
   .overlay {
@@ -97,3 +104,4 @@
     font-weight: bold;
   }
 </style>
+
