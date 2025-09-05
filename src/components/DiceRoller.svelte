@@ -3,31 +3,51 @@
   const dispatch = createEventDispatcher();
 
   let showModal = false;
+  let showResultText = false;
+  let result = 0;
   let die1 = 1;
   let die2 = 1;
+  let rollInterval: ReturnType<typeof setInterval>;
+
+  const diceChars = ['\u2680','\u2681','\u2682','\u2683','\u2684','\u2685'];
+  const getChar = (n: number) => diceChars[n - 1];
 
   function openModal() {
-    roll();
     showModal = true;
-  }
-
-  function roll() {
-    die1 = Math.floor(Math.random() * 6) + 1;
-    die2 = Math.floor(Math.random() * 6) + 1;
-    dispatch('rolled', { total: die1 + die2 });
+    showResultText = false;
+    rollInterval = setInterval(() => {
+      die1 = Math.floor(Math.random() * 6) + 1;
+      die2 = Math.floor(Math.random() * 6) + 1;
+    }, 100);
+    setTimeout(() => {
+      clearInterval(rollInterval);
+      die1 = Math.floor(Math.random() * 6) + 1;
+      die2 = Math.floor(Math.random() * 6) + 1;
+      result = die1 + die2;
+      dispatch('rolled', { total: result });
+      setTimeout(() => {
+        showResultText = true;
+        setTimeout(() => {
+          showModal = false;
+          showResultText = false;
+        }, 3000);
+      }, 3000);
+    }, 2000);
   }
 </script>
 
-<button class="dice-button" on:click={openModal}>
+<button class="dice-button" on:click={openModal} aria-label="Lancer les dés">
   🎲
 </button>
 
 {#if showModal}
-  <div class="overlay" on:click={() => (showModal = false)}>
-    <div class="modal" on:click|stopPropagation>
-      <div class="dice">{die1}</div>
-      <div class="dice">{die2}</div>
-      <button on:click={() => (showModal = false)}>Ok</button>
+  <div class="overlay">
+    <div class="modal">
+      {#if !showResultText}
+        <div class="dice">{getChar(die1)}</div>
+        <div class="dice">{getChar(die2)}</div>
+        <p class="result-text">VOTRE LANCER : {result}</p>
+      {/if}
     </div>
   </div>
 {/if}
@@ -38,9 +58,16 @@
     top: 10px;
     right: 10px;
     font-size: 32px;
-    background: none;
-    border: none;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
   }
 
   .overlay {
@@ -71,4 +98,10 @@
     border: 1px solid #ccc;
     border-radius: 4px;
   }
+
+  .result-text {
+    font-size: 24px;
+    font-weight: bold;
+  }
 </style>
+
