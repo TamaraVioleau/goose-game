@@ -36,6 +36,7 @@
     } catch (e) {
       console.warn("Impossible de charger les catégories (debug)", e);
     }
+    canRoll = true;
     startTurn();
   });
 
@@ -243,32 +244,97 @@
   }
 </script>
 
-<h1>Goose Game</h1>
+<main class="page">
+  <div class="hud" aria-live="polite">
+    <div class="stat">
+      <span class="stat-label">Tour</span>
+      <span class="stat-value">{turns}/15</span>
+    </div>
+    <div class="divider" aria-hidden="true"></div>
+    <div class="stat">
+      <span class="stat-label">Score</span>
+      <span class="stat-value">{score}</span>
+    </div>
+  </div>
 
-<GameBoard currentPosition={position} />
-<p>{message}</p>
-<p>Score : {score}</p>
-{#if !gameOver && canRoll}
-  <DiceRoller on:rolled={handleRoll} />
-{/if}
-<QuestionModal
-  visible={showQuestion}
-  questionData={currentQuestion}
-  on:answered={handleAnswer}
-  on:close={handleClose}
-/>
+  <h1>Goose Game</h1>
+
+  <div class="board-wrap">
+    <GameBoard currentPosition={position} />
+    {#if !gameOver}
+      <DiceRoller on:rolled={handleRoll} />
+    {/if}
+  </div>
+
+  {#if message && !/^Tour\s+\d+\/\d+/.test(message)}
+    <div class="message">{message}</div>
+  {/if}
+
+  <QuestionModal
+    visible={showQuestion}
+    questionData={currentQuestion}
+    on:answered={handleAnswer}
+    on:close={handleClose}
+  />
+</main>
 
 <style>
-  h1 {
-    color: #4a90e2;
-    font-size: 2em;
-    text-align: center;
+  .page {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    place-items: center;
+    padding: 24px;
   }
 
-  p {
-    font-size: 1.2em;
+  h1 {
+    color: #0b2b4a;
+    font-size: 2.2em;
     text-align: center;
-    margin-top: 20px;
+    margin: 8px 0 16px;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.8);
   }
+
+  .board-wrap {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding: 8px;
+  }
+
+  .message {
+    margin-top: 16px;
+    background: rgba(255,255,255,0.85);
+    color: #0b2b4a;
+    padding: 10px 14px;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    backdrop-filter: blur(2px);
+    font-weight: 600;
+  }
+
+  .hud {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #ffffff, #f1f7ff);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+    backdrop-filter: blur(2px);
+  }
+
+  .hud .divider {
+    width: 1px;
+    height: 24px;
+    background: #d7e3f2;
+  }
+
+  .stat { display: grid; gap: 2px; }
+  .stat-label { font-size: 12px; color: #3d6b94; font-weight: 600; }
+  .stat-value { font-size: 18px; color: #0b2b4a; font-weight: 800; }
 </style>
 

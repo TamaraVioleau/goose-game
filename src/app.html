@@ -5,6 +5,23 @@
 		<link rel="icon" href="%sveltekit.assets%/favicon.svg" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		%sveltekit.head%
+		<style>
+			:root { --bg-top: #dff1ff; --bg-bottom: #f7fbff; }
+			html, body { height: 100%; }
+			body {
+				margin: 0;
+				font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+				color: #0b2b4a;
+				background:
+					radial-gradient(circle at 20% 18%, rgba(255,255,255,0.8), rgba(255,255,255,0) 35%),
+					radial-gradient(circle at 80% 24%, rgba(255,255,255,0.7), rgba(255,255,255,0) 38%),
+					radial-gradient(circle at 30% 82%, rgba(255,255,255,0.65), rgba(255,255,255,0) 36%),
+					linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
+				background-attachment: fixed;
+			}
+			* { box-sizing: border-box; }
+			button { font-family: inherit; }
+		</style>
 	</head>
 	<body data-sveltekit-preload-data="hover">
 		<div style="display: contents">%sveltekit.body%</div>

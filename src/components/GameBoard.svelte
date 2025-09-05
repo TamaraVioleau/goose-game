@@ -26,9 +26,14 @@
 <style>
   .board {
     display: grid;
-    grid-template-columns: repeat(10, 40px);
-    grid-template-rows: repeat(10, 40px);
-    gap: 4px;
+    grid-template-columns: repeat(10, 45px);
+    grid-template-rows: repeat(10, 45px);
+    gap: 6px;
     width: fit-content;
+    padding: 16px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.75);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    backdrop-filter: blur(2px);
   }
 </style>

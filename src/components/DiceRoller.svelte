@@ -54,20 +54,39 @@
 
 <style>
   .dice-button {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    font-size: 32px;
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    width: 48px;
-    height: 48px;
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    font-size: 28px;
+    width: 56px;
+    height: 56px;
+    border: none;
+    border-radius: 16px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    color: #0b2b4a;
+    background: linear-gradient(135deg, #ffffff, #e6f3ff);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+
+  .dice-button:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 14px 30px rgba(0,0,0,0.22);
+    background: linear-gradient(135deg, #ffffff, #d9ecff);
+  }
+
+  .dice-button:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2) inset;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
   }
 
   .overlay {
@@ -80,28 +99,33 @@
   }
 
   .modal {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
+    background: linear-gradient(180deg, #ffffff, #f5f9ff);
+    padding: 20px 24px;
+    border-radius: 14px;
     display: flex;
-    gap: 10px;
+    gap: 12px;
     align-items: center;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
   }
 
   .dice {
     font-size: 40px;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 10px;
+    background: linear-gradient(160deg, #ffffff, #eef5ff);
+    box-shadow: inset 0 0 0 1px #dce7f3, 0 4px 12px rgba(0,0,0,0.12);
   }
 
   .result-text {
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 20px;
+    font-weight: 700;
+    color: #0b2b4a;
+    margin-left: 4px;
   }
 </style>
+
 
